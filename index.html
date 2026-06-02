@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jardim Noturno Luminoso</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Cena: tela cheia, sem scroll. A intro dispara ao clicar em "click". -->
+    <main class="scene" id="scene">
+
+        <!-- ============================================================
+             Botão central + mensagem em espanhol
+             ============================================================ -->
+        <div class="start" id="startWrap">
+            <button class="start-btn" id="startBtn" type="button" aria-label="Iniciar">
+                <span class="start-btn__label">click</span>
+            </button>
+            <p class="start-msg">Recuerdo que te gustan las flores rojas</p>
+        </div>
+
+        <!-- ============================================================
+             Camada 1 — estrelas/poeira no céu (terço superior)
+             ============================================================ -->
+        <div class="stars" aria-hidden="true">
+            <span class="star" style="--x:6%;  --y:12%; --d:0s;  --dur:5s;"></span>
+            <span class="star" style="--x:13%; --y:6%;  --d:1s;  --dur:6s;"></span>
+            <span class="star" style="--x:21%; --y:18%; --d:.5s; --dur:7s;"></span>
+            <span class="star" style="--x:27%; --y:9%;  --d:2s;  --dur:5.5s;"></span>
+            <span class="star" style="--x:35%; --y:24%; --d:1.5s;--dur:6.5s;"></span>
+            <span class="star" style="--x:42%; --y:5%;  --d:.8s; --dur:7.5s;"></span>
+            <span class="star" style="--x:48%; --y:14%; --d:2.5s;--dur:6s;"></span>
+            <span class="star" style="--x:55%; --y:7%;  --d:.3s; --dur:5s;"></span>
+            <span class="star" style="--x:61%; --y:20%; --d:1.8s;--dur:7s;"></span>
+            <span class="star" style="--x:68%; --y:11%; --d:2.2s;--dur:6.5s;"></span>
+            <span class="star" style="--x:74%; --y:4%;  --d:1.3s;--dur:5.5s;"></span>
+            <span class="star" style="--x:80%; --y:16%; --d:.7s; --dur:6s;"></span>
+            <span class="star" style="--x:86%; --y:8%;  --d:2.7s;--dur:7s;"></span>
+            <span class="star" style="--x:92%; --y:22%; --d:.4s; --dur:5.5s;"></span>
+            <span class="star" style="--x:3%;  --y:28%; --d:1.7s;--dur:6s;"></span>
+            <span class="star" style="--x:17%; --y:32%; --d:.9s; --dur:7s;"></span>
+            <span class="star" style="--x:38%; --y:34%; --d:2.3s;--dur:6s;"></span>
+            <span class="star" style="--x:57%; --y:30%; --d:1.4s;--dur:5.5s;"></span>
+            <span class="star" style="--x:78%; --y:33%; --d:.6s; --dur:7s;"></span>
+            <span class="star" style="--x:96%; --y:36%; --d:2s;  --dur:6.5s;"></span>
+        </div>
+
+        <!-- ============================================================
+             Camada 2 — vaga-lumes (concentrados nas laterais)
+             ============================================================ -->
+        <div class="fireflies" aria-hidden="true">
+            <!-- Lateral esquerda -->
+            <span class="firefly" style="--x:8%;  --y:55%; --c:var(--fly-yellow); --d:0s;   --dur:6s;"></span>
+            <span class="firefly" style="--x:12%; --y:40%; --c:var(--fly-green);  --d:1.4s; --dur:7s;"></span>
+            <span class="firefly" style="--x:5%;  --y:68%; --c:var(--fly-white);  --d:.7s;  --dur:5.5s;"></span>
+            <span class="firefly" style="--x:18%; --y:50%; --c:var(--fly-yellow); --d:2.1s; --dur:6.5s;"></span>
+            <span class="firefly" style="--x:22%; --y:72%; --c:var(--fly-green);  --d:.4s;  --dur:8s;"></span>
+            <span class="firefly" style="--x:14%; --y:30%; --c:var(--fly-white);  --d:1.7s; --dur:7s;"></span>
+            <span class="firefly" style="--x:26%; --y:62%; --c:var(--fly-yellow); --d:2.6s; --dur:5.5s;"></span>
+            <span class="firefly" style="--x:30%; --y:80%; --c:var(--fly-green);  --d:.9s;  --dur:6s;"></span>
+            <span class="firefly" style="--x:34%; --y:46%; --c:var(--fly-white);  --d:2.2s; --dur:7.5s;"></span>
+            <!-- Lateral direita -->
+            <span class="firefly" style="--x:65%; --y:50%; --c:var(--fly-yellow); --d:.3s;  --dur:6s;"></span>
+            <span class="firefly" style="--x:70%; --y:70%; --c:var(--fly-green);  --d:1.9s; --dur:7s;"></span>
+            <span class="firefly" style="--x:75%; --y:42%; --c:var(--fly-white);  --d:.8s;  --dur:5.5s;"></span>
+            <span class="firefly" style="--x:80%; --y:60%; --c:var(--fly-yellow); --d:2.5s; --dur:8s;"></span>
+            <span class="firefly" style="--x:85%; --y:35%; --c:var(--fly-green);  --d:1.1s; --dur:6.5s;"></span>
+            <span class="firefly" style="--x:90%; --y:75%; --c:var(--fly-white);  --d:.5s;  --dur:7s;"></span>
+            <span class="firefly" style="--x:94%; --y:48%; --c:var(--fly-yellow); --d:2s;   --dur:5.5s;"></span>
+            <span class="firefly" style="--x:88%; --y:62%; --c:var(--fly-green);  --d:1.6s; --dur:6s;"></span>
+            <span class="firefly" style="--x:72%; --y:84%; --c:var(--fly-white);  --d:2.8s; --dur:7s;"></span>
+        </div>
+
+        <!-- ============================================================
+             Camada 3 — grama densa: chão escuro + lâminas
+             ============================================================ -->
+        <div class="grass" aria-hidden="true">
+            <!-- Chão verde-escuro (gradiente de "undergrowth") -->
+            <div class="grass-ground"></div>
+
+            <!-- Lateral esquerda -->
+            <span class="blade" style="--left:1%;  --h:80px; --w:5px; --rot:-6deg; --d:0s;"></span>
+            <span class="blade" style="--left:4%;  --h:65px; --w:4px; --rot:5deg;  --d:.05s;"></span>
+            <span class="blade" style="--left:7%;  --h:100px;--w:5px; --rot:4deg;  --d:.1s;"></span>
+            <span class="blade" style="--left:11%; --h:70px; --w:4px; --rot:-8deg; --d:.2s;"></span>
+            <span class="blade" style="--left:14%; --h:90px; --w:5px; --rot:6deg;  --d:.05s;"></span>
+            <span class="blade" style="--left:17%; --h:55px; --w:3px; --rot:-3deg; --d:.18s;"></span>
+            <span class="blade" style="--left:20%; --h:75px; --w:5px; --rot:-4deg; --d:.15s;"></span>
+            <span class="blade" style="--left:23%; --h:85px; --w:4px; --rot:7deg;  --d:.27s;"></span>
+
+            <!-- Centro (preenche o vão) -->
+            <span class="blade" style="--left:28%; --h:50px; --w:3px; --rot:-6deg; --d:.32s;"></span>
+            <span class="blade" style="--left:33%; --h:62px; --w:4px; --rot:5deg;  --d:.36s;"></span>
+            <span class="blade" style="--left:38%; --h:70px; --w:5px; --rot:-5deg; --d:.3s;"></span>
+            <span class="blade" style="--left:43%; --h:55px; --w:3px; --rot:6deg;  --d:.42s;"></span>
+            <span class="blade" style="--left:48%; --h:48px; --w:3px; --rot:-4deg; --d:.45s;"></span>
+            <span class="blade" style="--left:52%; --h:52px; --w:3px; --rot:5deg;  --d:.5s;"></span>
+            <span class="blade" style="--left:57%; --h:60px; --w:4px; --rot:-6deg; --d:.38s;"></span>
+            <span class="blade" style="--left:62%; --h:72px; --w:5px; --rot:5deg;  --d:.4s;"></span>
+            <span class="blade" style="--left:67%; --h:55px; --w:4px; --rot:-3deg; --d:.43s;"></span>
+            <span class="blade" style="--left:72%; --h:68px; --w:4px; --rot:6deg;  --d:.46s;"></span>
+
+            <!-- Lateral direita -->
+            <span class="blade" style="--left:76%; --h:58px; --w:3px; --rot:-5deg; --d:.21s;"></span>
+            <span class="blade" style="--left:79%; --h:85px; --w:5px; --rot:8deg;  --d:.25s;"></span>
+            <span class="blade" style="--left:82%; --h:70px; --w:4px; --rot:-4deg; --d:.19s;"></span>
+            <span class="blade" style="--left:85%; --h:95px; --w:5px; --rot:-6deg; --d:.08s;"></span>
+            <span class="blade" style="--left:89%; --h:72px; --w:4px; --rot:5deg;  --d:.18s;"></span>
+            <span class="blade" style="--left:92%; --h:60px; --w:3px; --rot:-7deg; --d:.13s;"></span>
+            <span class="blade" style="--left:95%; --h:100px;--w:5px; --rot:-7deg; --d:.22s;"></span>
+            <span class="blade" style="--left:98%; --h:78px; --w:4px; --rot:6deg;  --d:.12s;"></span>
+        </div>
+
+        <!-- ============================================================
+             Mini-flores espalhadas pela cena (entre a grama e a planta)
+             ============================================================ -->
+        <div class="mini-flowers" aria-hidden="true">
+            <div class="mini-flower" style="--x:6%;  --y:84%; --s:.6;  --d:3.4s;"></div>
+            <div class="mini-flower" style="--x:13%; --y:91%; --s:.8;  --d:3.6s;"></div>
+            <div class="mini-flower" style="--x:20%; --y:78%; --s:.5;  --d:3.5s;"></div>
+            <div class="mini-flower" style="--x:28%; --y:93%; --s:.7;  --d:3.8s;"></div>
+            <div class="mini-flower" style="--x:36%; --y:86%; --s:.55; --d:3.7s;"></div>
+            <div class="mini-flower" style="--x:42%; --y:94%; --s:.65; --d:3.9s;"></div>
+            <div class="mini-flower" style="--x:58%; --y:94%; --s:.7;  --d:4s;"></div>
+            <div class="mini-flower" style="--x:64%; --y:87%; --s:.5;  --d:3.8s;"></div>
+            <div class="mini-flower" style="--x:72%; --y:92%; --s:.75; --d:3.6s;"></div>
+            <div class="mini-flower" style="--x:80%; --y:80%; --s:.55; --d:3.7s;"></div>
+            <div class="mini-flower" style="--x:87%; --y:90%; --s:.8;  --d:3.5s;"></div>
+            <div class="mini-flower" style="--x:94%; --y:84%; --s:.6;  --d:3.4s;"></div>
+            <div class="mini-flower" style="--x:32%; --y:70%; --s:.45; --d:4.1s;"></div>
+            <div class="mini-flower" style="--x:68%; --y:73%; --s:.45; --d:4.2s;"></div>
+        </div>
+
+        <!-- ============================================================
+             Camada 4–7 — planta: arbusto base + 3 hastes com flores
+             Origem comum: centro da base (transform-origin: bottom center)
+             ============================================================ -->
+        <div class="plant">
+
+            <!-- 4) Arbusto: aglomerado de folhas em leque -->
+            <div class="bush">
+                <!-- Camada traseira (mais escura/larga) -->
+                <span class="bush-leaf" style="--x:-90px;--y:-5px; --rot:-50deg;--s:1.1;--d:0s;"></span>
+                <span class="bush-leaf" style="--x:-70px;--y:-25px;--rot:-35deg;--s:1.0;--d:.05s;"></span>
+                <span class="bush-leaf" style="--x:-55px;--y:-10px;--rot:-60deg;--s:.9; --d:.1s;"></span>
+                <span class="bush-leaf" style="--x:-40px;--y:-30px;--rot:-20deg;--s:1.1;--d:.15s;"></span>
+                <span class="bush-leaf" style="--x:-25px;--y:-45px;--rot:-10deg;--s:1.0;--d:.2s;"></span>
+                <span class="bush-leaf" style="--x:-10px;--y:-55px;--rot:0deg;  --s:1.2;--d:.25s;"></span>
+                <span class="bush-leaf" style="--x:10px; --y:-55px;--rot:0deg;  --s:1.2;--d:.3s;"></span>
+                <span class="bush-leaf" style="--x:25px; --y:-45px;--rot:10deg; --s:1.0;--d:.35s;"></span>
+                <span class="bush-leaf" style="--x:40px; --y:-30px;--rot:20deg; --s:1.1;--d:.4s;"></span>
+                <span class="bush-leaf" style="--x:55px; --y:-10px;--rot:60deg; --s:.9; --d:.45s;"></span>
+                <span class="bush-leaf" style="--x:70px; --y:-25px;--rot:35deg; --s:1.0;--d:.5s;"></span>
+                <span class="bush-leaf" style="--x:90px; --y:-5px; --rot:50deg; --s:1.1;--d:.55s;"></span>
+                <!-- Camada frontal (mais clara, menor) -->
+                <span class="bush-leaf bush-leaf--front" style="--x:-30px;--y:-15px;--rot:-25deg;--s:.85;--d:.6s;"></span>
+                <span class="bush-leaf bush-leaf--front" style="--x:0px;  --y:-25px;--rot:-5deg; --s:.95;--d:.65s;"></span>
+                <span class="bush-leaf bush-leaf--front" style="--x:30px; --y:-15px;--rot:25deg; --s:.85;--d:.7s;"></span>
+                <span class="bush-leaf bush-leaf--front" style="--x:-15px;--y:-40px;--rot:-15deg;--s:.8; --d:.75s;"></span>
+            </div>
+
+            <!-- 5,6,7) Haste CENTRAL — mais alta, reta -->
+            <div class="stem stem--center"
+                 style="--lean:0deg; --sway-amp:2deg; --h:340px;
+                        --grow-d:.8s; --leaf-d:1.6s; --flower-d:2.4s; --sway-d:0s;">
+                <div class="stem-bar"></div>
+                <div class="stem-leaf stem-leaf--l" style="--b:30%; --d:1.6s;"></div>
+                <div class="stem-leaf stem-leaf--r" style="--b:30%; --d:1.6s;"></div>
+                <div class="stem-leaf stem-leaf--l stem-leaf--sm" style="--b:58%; --d:1.85s;"></div>
+                <div class="stem-leaf stem-leaf--r stem-leaf--sm" style="--b:58%; --d:1.85s;"></div>
+                <div class="flower">
+                    <div class="petal" style="--rot:0deg;   --d:2.4s;"></div>
+                    <div class="petal" style="--rot:72deg;  --d:2.5s;"></div>
+                    <div class="petal" style="--rot:144deg; --d:2.6s;"></div>
+                    <div class="petal" style="--rot:216deg; --d:2.7s;"></div>
+                    <div class="petal" style="--rot:288deg; --d:2.8s;"></div>
+                    <div class="calyx" style="--d:2.4s;"></div>
+                    <div class="core"     style="--d:2.9s;"></div>
+                    <div class="core-dot" style="--d:3.0s;"></div>
+                </div>
+            </div>
+
+            <!-- Haste ESQUERDA — mais baixa, curvada para esquerda -->
+            <div class="stem stem--left"
+                 style="--lean:-15deg; --sway-amp:-2deg; --h:280px;
+                        --grow-d:1.1s; --leaf-d:1.9s; --flower-d:2.8s; --sway-d:.8s;">
+                <div class="stem-bar"></div>
+                <div class="stem-leaf stem-leaf--l" style="--b:30%; --d:1.9s;"></div>
+                <div class="stem-leaf stem-leaf--r" style="--b:30%; --d:1.9s;"></div>
+                <div class="stem-leaf stem-leaf--l stem-leaf--sm" style="--b:58%; --d:2.15s;"></div>
+                <div class="stem-leaf stem-leaf--r stem-leaf--sm" style="--b:58%; --d:2.15s;"></div>
+                <div class="flower">
+                    <div class="petal" style="--rot:0deg;   --d:2.8s;"></div>
+                    <div class="petal" style="--rot:72deg;  --d:2.9s;"></div>
+                    <div class="petal" style="--rot:144deg; --d:3.0s;"></div>
+                    <div class="petal" style="--rot:216deg; --d:3.1s;"></div>
+                    <div class="petal" style="--rot:288deg; --d:3.2s;"></div>
+                    <div class="calyx" style="--d:2.8s;"></div>
+                    <div class="core"     style="--d:3.3s;"></div>
+                    <div class="core-dot" style="--d:3.4s;"></div>
+                </div>
+            </div>
+
+            <!-- Haste DIREITA — intermediária, curvada para direita -->
+            <div class="stem stem--right"
+                 style="--lean:15deg; --sway-amp:2deg; --h:310px;
+                        --grow-d:1.3s; --leaf-d:2.1s; --flower-d:3.0s; --sway-d:1.4s;">
+                <div class="stem-bar"></div>
+                <div class="stem-leaf stem-leaf--l" style="--b:30%; --d:2.1s;"></div>
+                <div class="stem-leaf stem-leaf--r" style="--b:30%; --d:2.1s;"></div>
+                <div class="stem-leaf stem-leaf--l stem-leaf--sm" style="--b:58%; --d:2.35s;"></div>
+                <div class="stem-leaf stem-leaf--r stem-leaf--sm" style="--b:58%; --d:2.35s;"></div>
+                <div class="flower">
+                    <div class="petal" style="--rot:0deg;   --d:3.0s;"></div>
+                    <div class="petal" style="--rot:72deg;  --d:3.1s;"></div>
+                    <div class="petal" style="--rot:144deg; --d:3.2s;"></div>
+                    <div class="petal" style="--rot:216deg; --d:3.3s;"></div>
+                    <div class="petal" style="--rot:288deg; --d:3.4s;"></div>
+                    <div class="calyx" style="--d:3.0s;"></div>
+                    <div class="core"     style="--d:3.5s;"></div>
+                    <div class="core-dot" style="--d:3.6s;"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Único uso de JS: liberar as animações ao clicar no botão central.
+        const scene = document.getElementById('scene');
+        const btn   = document.getElementById('startBtn');
+        const wrap  = document.getElementById('startWrap');
+        btn.addEventListener('click', () => {
+            scene.classList.add('playing');
+            wrap.classList.add('start--hidden');
+            setTimeout(() => wrap.remove(), 700);
+        }, { once: true });
+    </script>
+</body>
+</html>

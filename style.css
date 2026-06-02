@@ -1,0 +1,670 @@
+/* =====================================================================
+   JARDIM NOTURNO LUMINOSO — CSS puro
+   Camadas: fundo → estrelas → vaga-lumes → grama → arbusto → hastes →
+   folhas das hastes → flores.
+   Animações: intro (crescer/desabrochar) + loop ambiente (balanço, pulso,
+   cintilar, deriva). Tudo pausado até o usuário clicar em "Florescer".
+   ===================================================================== */
+
+/* ---------- Paleta e tempos ---------- */
+:root {
+    /* Fundo noturno + leve teal */
+    --bg-center:      #0a1611;
+    --bg-mid:         #050807;
+    --bg-edge:        #010302;
+
+    /* Estrelas / vaga-lumes */
+    --star:           rgba(255, 255, 255, .75);
+    --fly-yellow:     #fff3a8;
+    --fly-green:      #c7ff8a;
+    --fly-white:      #ffffff;
+
+    /* Grama (vivo e saturado) */
+    --grass-base:     #2f9e44;
+    --grass-tip:      #69e07a;
+
+    /* Folhas — arbusto e hastes (verde-azulado) */
+    --leaf-shadow:    #16544a;
+    --leaf-light:     #2f9e8a;
+    --leaf-vein:      rgba(180, 255, 220, .4);
+    --leaf-glow:      rgba(70, 200, 160, .3);
+
+    /* Hastes */
+    --stem-base:      #1a6b5e;
+    --stem-top:       #2f9e8a;
+
+    /* Pétalas — vermelho incandescente (tom MAIS forte/saturado, sem rosa) */
+    --petal-core:     #8a0000;   /* base profunda, quase sangue */
+    --petal-deep:     #c80000;   /* corpo principal — vermelho intenso */
+    --petal-light:    #ff1a1a;   /* highlight vivo */
+    --petal-edge:     #ff5a5a;   /* ponta — vermelho claro, não rosa */
+    --petal-glow:     rgba(255, 20, 20, .7);
+    --petal-glow-soft:rgba(255, 50, 50, .35);
+
+    /* Miolo dourado */
+    --core:           #fff5e6;
+    --core-dot:       #ffd54a;
+    --core-glow:      rgba(255, 213, 74, .85);
+
+    /* Tempos do loop ambiente */
+    --sway-dur:       6s;
+    --pulse-dur:      3.2s;
+}
+
+/* ---------- Reset ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
+
+/* =====================================================================
+   ESTADO INICIAL — tudo pausado até o clique no botão "click"
+   ===================================================================== */
+.scene .star,
+.scene .firefly,
+.scene .blade,
+.scene .bush-leaf,
+.scene .stem,
+.scene .stem-bar,
+.scene .stem-leaf,
+.scene .petal,
+.scene .core,
+.scene .core-dot,
+.scene .mini-flower,
+.scene .calyx {
+    animation-play-state: paused;
+}
+.scene.playing .star,
+.scene.playing .firefly,
+.scene.playing .blade,
+.scene.playing .bush-leaf,
+.scene.playing .stem,
+.scene.playing .stem-bar,
+.scene.playing .stem-leaf,
+.scene.playing .petal,
+.scene.playing .core,
+.scene.playing .core-dot,
+.scene.playing .mini-flower,
+.scene.playing .calyx {
+    animation-play-state: running;
+}
+
+/* =====================================================================
+   BOTÃO CENTRAL "click" + MENSAGEM em espanhol
+   ===================================================================== */
+.start {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    transition: opacity .6s ease, transform .6s ease;
+}
+.start--hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(1.25);
+}
+.start-btn {
+    padding: 14px 36px;
+    font: 600 17px/1 system-ui, sans-serif;
+    letter-spacing: .14em;
+    text-transform: lowercase;
+    color: #ffdada;
+    background: radial-gradient(ellipse at 50% 40%,
+        rgba(255, 60, 60, .22) 0%,
+        rgba(200, 0,   0, .18) 60%,
+        rgba(0,   0,   0, .4) 100%);
+    border: 1.5px solid rgba(255, 60, 60, .65);
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow:
+        0 0 12px var(--petal-glow),
+        0 0 28px var(--petal-glow-soft),
+        inset 0 0 16px rgba(255, 30, 30, .25);
+    text-shadow: 0 0 8px var(--petal-glow);
+    transition: transform .25s ease, box-shadow .3s ease;
+    animation: btn-pulse 2.4s ease-in-out infinite;
+}
+.start-btn:hover  { transform: scale(1.06); }
+.start-btn:active { transform: scale(.97); }
+@keyframes btn-pulse {
+    0%, 100% {
+        box-shadow:
+            0 0 12px var(--petal-glow),
+            0 0 24px var(--petal-glow-soft),
+            inset 0 0 14px rgba(255, 30, 30, .2);
+    }
+    50% {
+        box-shadow:
+            0 0 22px var(--petal-glow),
+            0 0 50px var(--petal-glow),
+            inset 0 0 22px rgba(255, 60, 60, .35);
+    }
+}
+.start-msg {
+    margin: 0;
+    font: 400 13px/1.5 system-ui, sans-serif;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(255, 210, 210, .8);
+    text-shadow: 0 0 10px var(--petal-glow-soft);
+    text-align: center;
+    max-width: 320px;
+    animation: msg-fade 3.2s ease-in-out infinite;
+}
+@keyframes msg-fade {
+    0%, 100% { opacity: .6; }
+    50%      { opacity: 1;  }
+}
+
+/* =====================================================================
+   CENA — Camada 0: fundo radial + vinheta
+   ===================================================================== */
+.scene {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 78%,
+            #0e1f1a  0%,
+            var(--bg-center) 30%,
+            var(--bg-mid)    65%,
+            var(--bg-edge)  100%);
+}
+.scene::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9;
+    background:
+        /* leve "respiração" verde-azulada no solo */
+        radial-gradient(ellipse at 50% 100%, rgba(40, 110, 90, .22), transparent 55%),
+        /* vinheta nas bordas */
+        radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.6) 100%);
+}
+
+/* =====================================================================
+   Camada 1 — ESTRELAS
+   ===================================================================== */
+.stars { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.star {
+    position: absolute;
+    left: var(--x); top: var(--y);
+    width: 2px; height: 2px;
+    border-radius: 50%;
+    background: var(--star);
+    box-shadow: 0 0 3px rgba(255, 255, 255, .7);
+    opacity: .25;
+    animation: star-twinkle var(--dur) ease-in-out infinite;
+    animation-delay: var(--d);
+}
+@keyframes star-twinkle {
+    0%, 100% { opacity: .15; transform: scale(.8); }
+    50%      { opacity: .55; transform: scale(1.1); }
+}
+
+/* =====================================================================
+   Camada 2 — VAGA-LUMES
+   ===================================================================== */
+.fireflies { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.firefly {
+    position: absolute;
+    left: var(--x); top: var(--y);
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+        0 0 8px  var(--c),
+        0 0 18px var(--c),
+        0 0 32px var(--c);
+    opacity: 0;
+    will-change: transform, opacity;
+    animation:
+        fly-twinkle var(--dur) ease-in-out infinite,
+        fly-drift   calc(var(--dur) * 2) ease-in-out infinite;
+    animation-delay: var(--d), var(--d);
+}
+@keyframes fly-twinkle {
+    0%, 100% { opacity: .15; transform: translate(0,0) scale(.7); }
+    50%      { opacity: 1;   transform: translate(0,0) scale(1.2); }
+}
+@keyframes fly-drift {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(12px, -18px); }
+    50%  { transform: translate(-8px, -30px); }
+    75%  { transform: translate(-14px, -12px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* =====================================================================
+   Camada 3 — GRAMA
+   ===================================================================== */
+.grass {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 130px;
+    pointer-events: none;
+    z-index: 3;
+}
+/* Chão verde-escuro: dá densidade e enraíza visualmente as lâminas */
+.grass-ground {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 50px;
+    background:
+        linear-gradient(to top,
+            rgba(20, 70, 45, .9)   0%,
+            rgba(30, 110, 70, .55) 40%,
+            rgba(40, 140, 90, .25) 75%,
+            transparent           100%);
+    filter: drop-shadow(0 0 8px var(--leaf-glow));
+    pointer-events: none;
+}
+.blade {
+    position: absolute;
+    left: var(--left); bottom: 0;
+    width: var(--w, 5px); height: var(--h);
+    background: linear-gradient(to top, var(--grass-base), var(--grass-tip));
+    /* Lâmina pontiaguda no topo */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    transform-origin: bottom center;
+    transform: scaleY(0) rotate(var(--rot));
+    filter: drop-shadow(0 0 4px var(--leaf-glow));
+    animation:
+        blade-grow .9s cubic-bezier(.2, .8, .2, 1) forwards,
+        blade-sway 3.5s ease-in-out infinite;
+    animation-delay: var(--d), calc(var(--d) + 1s);
+}
+@keyframes blade-grow {
+    from { transform: scaleY(0) rotate(var(--rot)); }
+    to   { transform: scaleY(1) rotate(var(--rot)); }
+}
+@keyframes blade-sway {
+    0%, 100% { transform: scaleY(1) rotate(calc(var(--rot) - 3deg)); }
+    50%      { transform: scaleY(1) rotate(calc(var(--rot) + 3deg)); }
+}
+
+/* =====================================================================
+   Camadas 4–7 — PLANTA
+   Ponto de origem comum: centro inferior da viewport, acima da grama.
+   ===================================================================== */
+.plant {
+    position: absolute;
+    left: 50%;
+    bottom: 80px;
+    width: 0; height: 0;
+    z-index: 5;
+}
+
+/* ---------- Camada 4 — ARBUSTO BASE ---------- */
+.bush {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 0; height: 0;
+}
+.bush-leaf {
+    position: absolute;
+    /* (--x, --y) deslocamento em px a partir do centro-base; --y negativo = sobe */
+    left: var(--x); top: var(--y);
+    width: 38px; height: 20px;
+    margin-left: -19px;   /* centraliza horizontalmente sobre --x */
+    margin-top:  -10px;   /* centraliza verticalmente sobre --y   */
+    background: linear-gradient(135deg, var(--leaf-shadow), var(--leaf-light));
+    /* Formato de amêndoa: cantos opostos arredondados */
+    border-radius: 0 100% 0 100%;
+    transform: rotate(var(--rot)) scale(0);
+    opacity: 0;
+    filter: drop-shadow(0 0 6px var(--leaf-glow));
+    animation: bush-leaf-pop .8s cubic-bezier(.2, .8, .2, 1) forwards;
+    animation-delay: var(--d);
+}
+.bush-leaf--front {
+    width: 32px; height: 16px;
+    margin-left: -16px; margin-top: -8px;
+    background: linear-gradient(135deg, #1d6b5e, #3fb19a);
+    z-index: 2;
+}
+@keyframes bush-leaf-pop {
+    from { opacity: 0; transform: rotate(var(--rot)) scale(0);          }
+    to   { opacity: 1; transform: rotate(var(--rot)) scale(var(--s));   }
+}
+
+/* ---------- Camadas 5+6 — HASTE (container que lean + sway) ---------- */
+.stem {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 6px; height: var(--h);
+    transform: translateX(-50%) rotate(var(--lean));
+    transform-origin: bottom center;
+    /* Balanço sutil contínuo (combina o lean baseline + amplitude) */
+    animation: sway var(--sway-dur) ease-in-out infinite;
+    animation-delay: var(--sway-d);
+}
+.stem--center { z-index: 6; }   /* flor central por cima */
+.stem--left   { z-index: 5; }
+.stem--right  { z-index: 5; }
+
+@keyframes sway {
+    0%, 100% { transform: translateX(-50%) rotate(var(--lean)); }
+    50%      { transform: translateX(-50%) rotate(calc(var(--lean) + var(--sway-amp))); }
+}
+
+/* A barra visível do caule cresce de baixo pra cima */
+.stem-bar {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--stem-base), var(--stem-top));
+    border-radius: 6px;
+    transform-origin: bottom center;
+    transform: scaleY(0);
+    filter: drop-shadow(0 0 4px var(--leaf-glow));
+    animation: stem-grow 1.2s cubic-bezier(.2, .8, .2, 1) forwards;
+    animation-delay: var(--grow-d);
+}
+@keyframes stem-grow {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+}
+
+/* ---------- Camada 6 — FOLHAS DAS HASTES (pareadas) ---------- */
+.stem-leaf {
+    position: absolute;
+    bottom: var(--b);
+    width: 42px; height: 18px;
+    border-radius: 80% 10% 80% 10% / 100% 50% 100% 50%;
+    opacity: 0;
+    filter: drop-shadow(0 0 5px var(--leaf-glow));
+}
+/* Nervura central mais clara */
+.stem-leaf::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 12%;
+    width: 76%; height: 1.5px;
+    background: var(--leaf-vein);
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+.stem-leaf--l {
+    left: -38px;
+    background: linear-gradient(to left,  var(--leaf-shadow), var(--leaf-light));
+    transform-origin: right center;
+    transform: scale(0) rotate(20deg);
+    animation: stem-leaf-open-l .9s cubic-bezier(.2, .8, .2, 1) forwards;
+    animation-delay: var(--d);
+}
+.stem-leaf--r {
+    right: -38px;
+    background: linear-gradient(to right, var(--leaf-shadow), var(--leaf-light));
+    transform-origin: left center;
+    transform: scale(0) rotate(-20deg);
+    animation: stem-leaf-open-r .9s cubic-bezier(.2, .8, .2, 1) forwards;
+    animation-delay: var(--d);
+}
+/* Par superior: menor */
+.stem-leaf--sm                  { width: 34px; height: 15px; }
+.stem-leaf--sm.stem-leaf--l     { left: -30px; }
+.stem-leaf--sm.stem-leaf--r     { right: -30px; }
+
+@keyframes stem-leaf-open-l {
+    to { opacity: 1; transform: scale(1) rotate(-14deg); }
+}
+@keyframes stem-leaf-open-r {
+    to { opacity: 1; transform: scale(1) rotate(14deg); }
+}
+
+/* =====================================================================
+   Camada 7 — FLOR (5 pétalas + miolo)
+   .flower é um ponto-âncora no topo da haste; pétalas radiam dele.
+   ===================================================================== */
+.flower {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0; height: 0;
+}
+
+/* PÉTALA — base no centro da flor; gira em torno desse ponto. */
+.petal {
+    position: absolute;
+    bottom: 0;
+    left: -26px;          /* centraliza a base sobre o centro da flor */
+    width: 52px; height: 66px;
+    background:
+        radial-gradient(ellipse at 50% 25%,
+            var(--petal-edge)  0%,
+            var(--petal-light) 25%,
+            var(--petal-deep) 65%,
+            var(--petal-core)100%);
+    border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+    transform-origin: 50% 100%;
+    transform: rotate(0deg) scale(0);
+    opacity: 0;
+    box-shadow:
+        0 0 10px var(--petal-glow),
+        0 0 22px var(--petal-glow-soft);
+    filter: drop-shadow(0 0 6px var(--petal-glow));
+    will-change: transform, opacity;
+    /* Intro (abre) + loop (pulso de glow). Animam props diferentes,
+       então compõem sem conflito. */
+    animation:
+        petal-open  1s cubic-bezier(.22, 1, .36, 1) forwards,
+        petal-pulse var(--pulse-dur) ease-in-out infinite;
+    animation-delay: var(--d), calc(var(--d) + 1s);
+}
+@keyframes petal-open {
+    0%   { transform: rotate(0deg) scale(0);             opacity: 0; }
+    60%  {                                               opacity: 1; }
+    100% { transform: rotate(var(--rot)) scale(1);       opacity: 1; }
+}
+@keyframes petal-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 6px var(--petal-glow));
+        box-shadow:
+            0 0 10px var(--petal-glow),
+            0 0 18px var(--petal-glow-soft);
+    }
+    50% {
+        filter: drop-shadow(0 0 14px var(--petal-glow));
+        box-shadow:
+            0 0 22px var(--petal-glow),
+            0 0 44px var(--petal-glow),
+            0 0 70px var(--petal-glow-soft);
+    }
+}
+
+/* MIOLO — anel branco-creme */
+.core {
+    position: absolute;
+    top: -12px; left: -12px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%,
+        #ffffff   0%,
+        var(--core) 55%,
+        #f0d8a0 100%);
+    opacity: 0;
+    box-shadow:
+        0 0 10px var(--core-glow),
+        0 0 20px var(--core-glow);
+    animation:
+        core-light .8s ease-out forwards,
+        core-pulse var(--pulse-dur) ease-in-out infinite;
+    animation-delay: var(--d), calc(var(--d) + .8s);
+    z-index: 2;
+}
+/* Núcleo dourado luminoso por cima */
+.core-dot {
+    position: absolute;
+    top: -7px; left: -7px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%,
+        #fff8c8       0%,
+        var(--core-dot) 55%,
+        #c98a00     100%);
+    opacity: 0;
+    box-shadow:
+        0 0 10px var(--core-glow),
+        0 0 22px var(--core-glow),
+        0 0 40px var(--core-glow);
+    animation:
+        core-light .8s ease-out forwards,
+        core-pulse var(--pulse-dur) ease-in-out infinite;
+    animation-delay: var(--d), calc(var(--d) + .8s);
+    z-index: 3;
+}
+@keyframes core-light {
+    to { opacity: 1; }
+}
+@keyframes core-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 8px  var(--core-glow), 0 0 16px var(--core-glow);
+    }
+    50% {
+        transform: scale(1.12);
+        box-shadow: 0 0 18px var(--core-glow), 0 0 36px var(--core-glow), 0 0 60px var(--core-glow);
+    }
+}
+
+/* =====================================================================
+   CALYX — base verde sob as pétalas das 3 flores grandes
+   Forma de "tigela" arredondada por trás/abaixo das pétalas.
+   ===================================================================== */
+.calyx {
+    position: absolute;
+    top: -4px;
+    left: -13px;
+    width: 26px;
+    height: 14px;
+    background:
+        linear-gradient(to bottom,
+            var(--leaf-light) 0%,
+            var(--leaf-shadow) 90%);
+    /* Topo arredondado, base levemente afilada */
+    border-radius: 50% 50% 30% 30% / 80% 80% 30% 30%;
+    /* Nervura central para dar volume */
+    box-shadow: inset 0 -3px 6px rgba(0, 0, 0, .35);
+    opacity: 0;
+    transform: scale(.4);
+    filter: drop-shadow(0 0 5px var(--leaf-glow));
+    animation: calyx-rise .9s cubic-bezier(.2, .8, .2, 1) forwards;
+    animation-delay: var(--d);
+    z-index: 0;
+}
+@keyframes calyx-rise {
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* =====================================================================
+   MINI-FLORES — pequenas flores espalhadas pela cena
+   Truque single-div: o miolo dourado é a própria caixa; as 5 pétalas
+   são desenhadas via box-shadow com offsets em 0/72/144/216/288°.
+   ===================================================================== */
+.mini-flowers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+}
+.mini-flower {
+    position: absolute;
+    left: var(--x); top: var(--y);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    /* Miolo dourado central */
+    background: radial-gradient(circle at 40% 40%,
+        #fff8c8 0%, var(--core-dot) 60%, #c98a00 100%);
+    transform: scale(0);
+    opacity: 0;
+    /* 5 pétalas vermelhas em 0/72/144/216/288°, raio 14px, spread +5px */
+    box-shadow:
+        0       -14px   0 5px var(--petal-deep),
+        13.31px -4.33px 0 5px var(--petal-deep),
+        8.23px  11.33px 0 5px var(--petal-deep),
+       -8.23px  11.33px 0 5px var(--petal-deep),
+       -13.31px -4.33px 0 5px var(--petal-deep),
+        /* halo luminoso */
+        0 0 14px var(--petal-glow),
+        0 0 28px var(--petal-glow-soft);
+    filter: drop-shadow(0 0 5px var(--petal-glow));
+    animation:
+        mini-bloom .9s cubic-bezier(.2, .8, .2, 1) forwards,
+        mini-pulse calc(var(--pulse-dur) + 1s) ease-in-out infinite;
+    animation-delay: var(--d), calc(var(--d) + 1s);
+}
+/* Pequena haste verde sob cada mini-flor */
+.mini-flower::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 18px;
+    width: 2px;
+    height: 18px;
+    margin-left: -1px;
+    background: linear-gradient(to bottom, var(--stem-top), var(--stem-base));
+    border-radius: 2px;
+    transform-origin: top center;
+    filter: drop-shadow(0 0 3px var(--leaf-glow));
+}
+@keyframes mini-bloom {
+    from { opacity: 0; transform: scale(0); }
+    to   { opacity: 1; transform: scale(var(--s)); }
+}
+@keyframes mini-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px var(--petal-glow));
+        box-shadow:
+            0       -14px   0 5px var(--petal-deep),
+            13.31px -4.33px 0 5px var(--petal-deep),
+            8.23px  11.33px 0 5px var(--petal-deep),
+           -8.23px  11.33px 0 5px var(--petal-deep),
+           -13.31px -4.33px 0 5px var(--petal-deep),
+            0 0 12px var(--petal-glow),
+            0 0 24px var(--petal-glow-soft);
+    }
+    50% {
+        filter: drop-shadow(0 0 12px var(--petal-glow));
+        box-shadow:
+            0       -14px   0 5px var(--petal-light),
+            13.31px -4.33px 0 5px var(--petal-light),
+            8.23px  11.33px 0 5px var(--petal-light),
+           -8.23px  11.33px 0 5px var(--petal-light),
+           -13.31px -4.33px 0 5px var(--petal-light),
+            0 0 20px var(--petal-glow),
+            0 0 40px var(--petal-glow),
+            0 0 60px var(--petal-glow-soft);
+    }
+}
+
+/* =====================================================================
+   RESPONSIVO — escala proporcional em telas menores
+   ===================================================================== */
+@media (max-width: 900px) {
+    .plant { transform: scale(.85); transform-origin: bottom center; }
+}
+@media (max-width: 600px) {
+    .plant { transform: scale(.7); transform-origin: bottom center; }
+    .grass { height: 80px; }
+    .plant { bottom: 60px; }
+}
+@media (max-width: 400px) {
+    .plant { transform: scale(.55); transform-origin: bottom center; }
+}
+
+/* =====================================================================
+   ACESSIBILIDADE — respeita prefers-reduced-motion
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+    }
+}
