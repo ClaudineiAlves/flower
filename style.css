@@ -463,11 +463,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
     100% { transform: rotate(var(--rot)) scale(1);       opacity: 1; }
 }
 @keyframes petal-pulse {
+    /* 3 sombras em AMBOS os estados (mesma contagem evita "snap" de
+       interpolação que causava piscada a cada ciclo no mobile). */
     0%, 100% {
         filter: drop-shadow(0 0 6px var(--petal-glow));
         box-shadow:
             0 0 10px var(--petal-glow),
-            0 0 18px var(--petal-glow-soft);
+            0 0 18px var(--petal-glow-soft),
+            0 0 0    transparent;
     }
     50% {
         filter: drop-shadow(0 0 14px var(--petal-glow));
@@ -523,13 +526,20 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
     to { opacity: 1; }
 }
 @keyframes core-pulse {
+    /* 3 sombras em ambos os estados (mesma contagem). */
     0%, 100% {
         transform: scale(1);
-        box-shadow: 0 0 8px  var(--core-glow), 0 0 16px var(--core-glow);
+        box-shadow:
+            0 0 8px  var(--core-glow),
+            0 0 16px var(--core-glow),
+            0 0 0    transparent;
     }
     50% {
         transform: scale(1.12);
-        box-shadow: 0 0 18px var(--core-glow), 0 0 36px var(--core-glow), 0 0 60px var(--core-glow);
+        box-shadow:
+            0 0 18px var(--core-glow),
+            0 0 36px var(--core-glow),
+            0 0 60px var(--core-glow);
     }
 }
 
@@ -618,6 +628,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
     to   { opacity: 1; transform: scale(var(--s)); }
 }
 @keyframes mini-pulse {
+    /* 8 sombras em AMBOS os estados (5 pétalas + 3 halos). */
     0%, 100% {
         filter: drop-shadow(0 0 5px var(--petal-glow));
         box-shadow:
@@ -627,7 +638,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
            -8.23px  11.33px 0 5px var(--petal-deep),
            -13.31px -4.33px 0 5px var(--petal-deep),
             0 0 12px var(--petal-glow),
-            0 0 24px var(--petal-glow-soft);
+            0 0 24px var(--petal-glow-soft),
+            0 0 0    transparent;
     }
     50% {
         filter: drop-shadow(0 0 12px var(--petal-glow));
@@ -644,18 +656,34 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
 }
 
 /* =====================================================================
-   RESPONSIVO — escala proporcional em telas menores
+   RESPONSIVO — em telas menores AUMENTA a cena pra preencher mais
    ===================================================================== */
 @media (max-width: 900px) {
-    .plant { transform: scale(.85); transform-origin: bottom center; }
+    .plant { transform: scale(1.05); transform-origin: bottom center; }
 }
 @media (max-width: 600px) {
-    .plant { transform: scale(.7); transform-origin: bottom center; }
-    .grass { height: 80px; }
-    .plant { bottom: 60px; }
+    .plant {
+        transform: scale(1.25);
+        transform-origin: bottom center;
+        bottom: 70px;
+    }
+    .grass { height: 120px; }
+    .start-btn { padding: 18px 44px; font-size: 20px; }
+    .start-msg { font-size: 15px; max-width: 280px; }
 }
 @media (max-width: 400px) {
-    .plant { transform: scale(.55); transform-origin: bottom center; }
+    .plant {
+        transform: scale(1.35);
+        transform-origin: bottom center;
+        bottom: 60px;
+    }
+    .grass { height: 110px; }
+}
+
+/* Em retrato muito alto (celulares modernos), empurra a planta um pouco
+   pra cima pra ela não ficar engolida pela barra inferior */
+@media (max-aspect-ratio: 9 / 16) {
+    .plant { bottom: 12vh; }
 }
 
 /* =====================================================================
