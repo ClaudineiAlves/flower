@@ -88,6 +88,53 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
 }
 
 /* =====================================================================
+   MENSAGEM NO TOPO — typewriter em espanhol
+   Aparece depois que as flores terminam de desabrochar.
+   ===================================================================== */
+.top-msg {
+    position: absolute;
+    top: 6vh;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    max-width: min(820px, 88vw);
+    z-index: 15;
+    text-align: center;
+    font: italic 400 clamp(15px, 1.8vw, 22px)/1.65 Georgia, 'Times New Roman', serif;
+    color: rgba(255, 230, 230, .95);
+    letter-spacing: .03em;
+    text-shadow:
+        0 0 12px var(--petal-glow-soft),
+        0 0  4px rgba(0, 0, 0, .55);
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+    transition: opacity 1s ease, transform 1s ease;
+    pointer-events: none;
+}
+.top-msg.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+/* Cursor piscante enquanto digita */
+.top-msg::after {
+    content: "▌";
+    display: inline-block;
+    margin-left: 3px;
+    color: rgba(255, 90, 90, .9);
+    animation: caret-blink 1s steps(1) infinite;
+}
+.top-msg.is-done::after { display: none; }
+
+@keyframes caret-blink {
+    0%, 49%   { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+@media (max-width: 600px) {
+    .top-msg { top: 4vh; max-width: 92vw; }
+}
+
+/* =====================================================================
    BOTÃO CENTRAL "click" + MENSAGEM em espanhol
    ===================================================================== */
 .start {

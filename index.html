@@ -11,6 +11,11 @@
     <main class="scene" id="scene">
 
         <!-- ============================================================
+             Mensagem no topo (typewriter, em espanhol) — populada via JS
+             ============================================================ -->
+        <p class="top-msg" id="topMsg" aria-live="polite"></p>
+
+        <!-- ============================================================
              Botão central + mensagem em espanhol
              ============================================================ -->
         <div class="start" id="startWrap">
@@ -227,14 +232,37 @@
     </main>
 
     <script>
-        // Único uso de JS: liberar as animações ao clicar no botão central.
-        const scene = document.getElementById('scene');
-        const btn   = document.getElementById('startBtn');
-        const wrap  = document.getElementById('startWrap');
+        // 1) Liberar animações ao clicar; 2) Depois do florescer,
+        //    digitar a mensagem letra por letra no topo.
+        const scene  = document.getElementById('scene');
+        const btn    = document.getElementById('startBtn');
+        const wrap   = document.getElementById('startWrap');
+        const topMsg = document.getElementById('topMsg');
+
+        const MESSAGE = 'Espero que esto haga tu día mejor, April, eres muy importante para mí y te tengo mucho cariño';
+
+        // Digita o texto caractere por caractere, com pausa extra em pontuação.
+        function typewriter(el, text, baseDelay = 55) {
+            let i = 0;
+            (function tick() {
+                if (i >= text.length) { el.classList.add('is-done'); return; }
+                el.textContent = text.slice(0, ++i);
+                const last  = text[i - 1];
+                const pause = (last === ',' || last === '.') ? baseDelay * 7 : baseDelay;
+                setTimeout(tick, pause);
+            })();
+        }
+
         btn.addEventListener('click', () => {
             scene.classList.add('playing');
             wrap.classList.add('start--hidden');
             setTimeout(() => wrap.remove(), 700);
+
+            // ~3.8s = quando o florescer termina; a mensagem aparece e começa a digitar.
+            setTimeout(() => {
+                topMsg.classList.add('is-visible');
+                typewriter(topMsg, MESSAGE);
+            }, 3800);
         }, { once: true });
     </script>
 </body>
