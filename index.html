@@ -275,22 +275,21 @@
         function playSongFromTimestamp() {
             if (!ytPlayer || !ytReady) {
                 // Se a API ainda não tiver carregado, tenta de novo daqui a pouco.
-                setTimeout(playSongFromTimestamp, 200);
+                setTimeout(playSongFromTimestamp, 80);
                 return;
             }
             ytPlayer.seekTo(YT_START_SECONDS, true);
             ytPlayer.unMute && ytPlayer.unMute();
-            ytPlayer.setVolume(0);          // começa silencioso
+            ytPlayer.setVolume(0);          // começa silencioso (mascara o buffer)
             ytPlayer.playVideo();
 
-            // Fade-in: rampa o volume de 0 → 100 ao longo de RAMP_MS,
-            // a partir do primeiro frame em que a pétala começa a abrir.
-            const RAMP_MS = 3500;
+            // Fade-in rápido: volume 0 → 100 em 2.2s. Como play() é chamado
+            // já no clique, quando a rampa termina o áudio já está bufferizado.
+            const RAMP_MS = 2200;
             const t0 = performance.now();
             (function ramp(now) {
                 const t = Math.min(1, ((now || performance.now()) - t0) / RAMP_MS);
-                /* easing leve (ease-out) pra o tom subir suave no fim */
-                const eased = 1 - Math.pow(1 - t, 2);
+                const eased = 1 - Math.pow(1 - t, 2);   // ease-out
                 ytPlayer.setVolume(Math.round(eased * 100));
                 if (t < 1) requestAnimationFrame(ramp);
             })();
@@ -313,11 +312,16 @@
             wrap.classList.add('start--hidden');
             setTimeout(() => wrap.remove(), 700);
 
-            // ~2.4s = quando as pétalas começam a desabrochar; música + mensagem juntas.
+            // Música começa AGORA (volume 0). O play é disparado dentro do
+            // gesto do clique → o browser libera o autoplay e o iframe já
+            // começa a bufferizar enquanto a intro roda. Quando o volume
+            // sobe (~1-2s), o som já está pronto, sem delay perceptível.
+            playSongFromTimestamp();
+
+            // ~2.4s = primeira pétala abre → mensagem digita junto.
             setTimeout(() => {
                 topMsg.classList.add('is-visible');
                 typewriter(topMsg, MESSAGE);
-                playSongFromTimestamp();
             }, 2400);
         }, { once: true });
     </script>
