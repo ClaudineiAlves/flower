@@ -87,6 +87,17 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
     animation-play-state: running;
 }
 
+/* Player de YouTube — invisível, só áudio */
+.yt-hidden {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* =====================================================================
    MENSAGEM NO TOPO — typewriter em espanhol
    Aparece depois que as flores terminam de desabrochar.

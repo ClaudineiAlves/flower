@@ -15,6 +15,9 @@
              ============================================================ -->
         <p class="top-msg" id="topMsg" aria-live="polite"></p>
 
+        <!-- Player de YouTube oculto (área 1×1px fora da tela) -->
+        <div id="ytplayer" class="yt-hidden"></div>
+
         <!-- ============================================================
              Botão central + mensagem em espanhol
              ============================================================ -->
@@ -231,9 +234,17 @@
         </div>
     </main>
 
+    <!-- API do YouTube IFrame Player -->
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // 1) Liberar animações ao clicar; 2) Depois do florescer,
-        //    digitar a mensagem letra por letra no topo.
+        /* ================================================================
+           CONFIG — TROQUE pelo ID do vídeo do YouTube da "La Flaca Acoustique".
+           O ID é a parte depois de "v=" na URL:
+               https://www.youtube.com/watch?v=ABCDEFGHIJK   →   "ABCDEFGHIJK"
+           ================================================================ */
+        const YT_VIDEO_ID = 'r2g0pM3PMNQ';
+        const YT_START_SECONDS = 77;   // 1:17
+
         const scene  = document.getElementById('scene');
         const btn    = document.getElementById('startBtn');
         const wrap   = document.getElementById('startWrap');
@@ -241,7 +252,38 @@
 
         const MESSAGE = 'Espero que esto haga tu día mejor, April, eres muy importante para mí y te tengo mucho cariño';
 
-        // Digita o texto caractere por caractere, com pausa extra em pontuação.
+        // ---- YouTube player oculto ----
+        let ytPlayer = null;
+        let ytReady  = false;
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('ytplayer', {
+                height: '1', width: '1',
+                videoId: YT_VIDEO_ID,
+                playerVars: {
+                    autoplay: 0,
+                    controls: 0,
+                    disablekb: 1,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    start: YT_START_SECONDS,
+                },
+                events: {
+                    onReady: () => { ytReady = true; },
+                },
+            });
+        }
+        function playSongFromTimestamp() {
+            if (!ytPlayer || !ytReady) {
+                // Se a API ainda não tiver carregado, tenta de novo daqui a pouco.
+                setTimeout(playSongFromTimestamp, 200);
+                return;
+            }
+            ytPlayer.seekTo(YT_START_SECONDS, true);
+            ytPlayer.unMute && ytPlayer.unMute();
+            ytPlayer.playVideo();
+        }
+
+        // ---- Typewriter ----
         function typewriter(el, text, baseDelay = 55) {
             let i = 0;
             (function tick() {
@@ -258,10 +300,11 @@
             wrap.classList.add('start--hidden');
             setTimeout(() => wrap.remove(), 700);
 
-            // ~2.4s = quando as pétalas começam a desabrochar; mensagem digita junto.
+            // ~2.4s = quando as pétalas começam a desabrochar; música + mensagem juntas.
             setTimeout(() => {
                 topMsg.classList.add('is-visible');
                 typewriter(topMsg, MESSAGE);
+                playSongFromTimestamp();
             }, 2400);
         }, { once: true });
     </script>
