@@ -280,7 +280,20 @@
             }
             ytPlayer.seekTo(YT_START_SECONDS, true);
             ytPlayer.unMute && ytPlayer.unMute();
+            ytPlayer.setVolume(0);          // começa silencioso
             ytPlayer.playVideo();
+
+            // Fade-in: rampa o volume de 0 → 100 ao longo de RAMP_MS,
+            // a partir do primeiro frame em que a pétala começa a abrir.
+            const RAMP_MS = 3500;
+            const t0 = performance.now();
+            (function ramp(now) {
+                const t = Math.min(1, ((now || performance.now()) - t0) / RAMP_MS);
+                /* easing leve (ease-out) pra o tom subir suave no fim */
+                const eased = 1 - Math.pow(1 - t, 2);
+                ytPlayer.setVolume(Math.round(eased * 100));
+                if (t < 1) requestAnimationFrame(ramp);
+            })();
         }
 
         // ---- Typewriter ----
