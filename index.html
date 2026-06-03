@@ -258,11 +258,11 @@
             wrap.classList.add('start--hidden');
             setTimeout(() => wrap.remove(), 700);
 
-            // ~3.8s = quando o florescer termina; a mensagem aparece e começa a digitar.
+            // ~2.4s = quando as pétalas começam a desabrochar; mensagem digita junto.
             setTimeout(() => {
                 topMsg.classList.add('is-visible');
                 typewriter(topMsg, MESSAGE);
-            }, 3800);
+            }, 2400);
         }, { once: true });
     </script>
 </body>
