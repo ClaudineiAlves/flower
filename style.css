@@ -745,6 +745,42 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-edge); }
 }
 
 /* =====================================================================
+   BOTÃO DE PAUSAR A MÚSICA + utilitário para leitor de tela
+   ===================================================================== */
+.music-btn {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 20;
+    padding: 10px 18px;
+    font: 500 14px/1 system-ui, sans-serif;
+    color: #ffdada;
+    background: rgba(0, 0, 0, .55);
+    border: 1px solid rgba(255, 60, 60, .65);
+    border-radius: 999px;
+    cursor: pointer;
+}
+.music-btn[aria-pressed="true"] {
+    background: rgba(255, 60, 60, .3);
+}
+.start-btn:focus-visible,
+.music-btn:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+}
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* =====================================================================
    ACESSIBILIDADE — respeita prefers-reduced-motion
    ===================================================================== */
 @media (prefers-reduced-motion: reduce) {

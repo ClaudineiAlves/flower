@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,10 @@
         <!-- ============================================================
              Mensagem no topo (typewriter, em espanhol) — populada via JS
              ============================================================ -->
-        <p class="top-msg" id="topMsg" aria-live="polite"></p>
+        <p class="top-msg" id="topMsg" aria-hidden="true"></p>
+        <!-- Cópia para leitor de tela: recebe a mensagem inteira de uma vez,
+             em vez de anunciar cada letra do typewriter -->
+        <p class="sr-only" id="topMsgSr" aria-live="polite"></p>
 
         <!-- Player de YouTube oculto (área 1×1px fora da tela) -->
         <div id="ytplayer" class="yt-hidden"></div>
@@ -22,11 +25,14 @@
              Botão central + mensagem em espanhol
              ============================================================ -->
         <div class="start" id="startWrap">
-            <button class="start-btn" id="startBtn" type="button" aria-label="Iniciar">
+            <button class="start-btn" id="startBtn" type="button">
                 <span class="start-btn__label">click</span>
             </button>
             <p class="start-msg">Recuerdo que te gustan las flores rojas</p>
         </div>
+
+        <!-- Aparece no clique inicial e recebe o foco quando o botão "click" some -->
+        <button class="music-btn" id="musicBtn" type="button" aria-pressed="false" hidden>Pausar música</button>
 
         <!-- ============================================================
              Camada 1 — estrelas/poeira no céu (terço superior)
@@ -249,6 +255,8 @@
         const btn    = document.getElementById('startBtn');
         const wrap   = document.getElementById('startWrap');
         const topMsg = document.getElementById('topMsg');
+        const topMsgSr = document.getElementById('topMsgSr');
+        const musicBtn = document.getElementById('musicBtn');
 
         const MESSAGE = 'Espero que esto haga tu día mejor, April, eres muy importante para mí y te tengo mucho cariño';
 
@@ -268,7 +276,13 @@
                     start: YT_START_SECONDS,
                 },
                 events: {
-                    onReady: () => { ytReady = true; },
+                    onReady: () => {
+                        ytReady = true;
+                        // O player é só áudio: fora do Tab e da árvore de acessibilidade
+                        const iframe = ytPlayer.getIframe();
+                        iframe.tabIndex = -1;
+                        iframe.setAttribute('aria-hidden', 'true');
+                    },
                 },
             });
         }
@@ -307,10 +321,19 @@
             })();
         }
 
+        musicBtn.addEventListener('click', () => {
+            if (!ytPlayer || !ytReady) return;
+            const pausar = musicBtn.getAttribute('aria-pressed') !== 'true';
+            musicBtn.setAttribute('aria-pressed', pausar);
+            if (pausar) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
+        });
+
         btn.addEventListener('click', () => {
             scene.classList.add('playing');
             wrap.classList.add('start--hidden');
             setTimeout(() => wrap.remove(), 700);
+            musicBtn.hidden = false;
+            musicBtn.focus();
 
             // Música começa AGORA (volume 0). O play é disparado dentro do
             // gesto do clique → o browser libera o autoplay e o iframe já
@@ -321,6 +344,7 @@
             // ~2.4s = primeira pétala abre → mensagem digita junto.
             setTimeout(() => {
                 topMsg.classList.add('is-visible');
+                topMsgSr.textContent = MESSAGE;
                 typewriter(topMsg, MESSAGE);
             }, 2400);
         }, { once: true });
